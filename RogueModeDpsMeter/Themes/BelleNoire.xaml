@@ -1,0 +1,93 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- BelleNoire Libero skin: midnight teal panels, magenta-violet energy,
+         pink highlights, and a ghostly cyan accent inspired by the eye glow. -->
+
+    <!-- The actual background image is embedded by ThemeAssets.cs and assigned
+         from MainWindow.xaml.cs. -->
+    <SolidColorBrush x:Key="ThemeBackgroundBrush" Color="#00000000"/>
+    <SolidColorBrush x:Key="ThemeBackgroundOverlayBrush" Color="#8A09111A"/>
+
+    <Color x:Key="WindowGlowColor">#FFB43B9A</Color>
+
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#E7070D14"/>
+    <SolidColorBrush x:Key="WindowBorderBrush" Color="#E0C63DA7"/>
+    <SolidColorBrush x:Key="HeaderBackgroundBrush" Color="#E8090F17"/>
+    <SolidColorBrush x:Key="HeaderDividerBrush" Color="#9C6CC9FF"/>
+
+    <SolidColorBrush x:Key="PanelBackgroundBrush" Color="#D90A121A"/>
+    <SolidColorBrush x:Key="PanelElevatedBackgroundBrush" Color="#E0101721"/>
+    <SolidColorBrush x:Key="PanelBorderBrush" Color="#FF213140"/>
+    <SolidColorBrush x:Key="PanelStrongBorderBrush" Color="#D8E04AB9"/>
+
+    <SolidColorBrush x:Key="PrimaryTextBrush" Color="#FFF9F3FF"/>
+    <SolidColorBrush x:Key="SecondaryTextBrush" Color="#FFD3BCD9"/>
+    <SolidColorBrush x:Key="MutedTextBrush" Color="#FF89748F"/>
+    <SolidColorBrush x:Key="AccentBrush" Color="#FFFF4DBF"/>
+    <SolidColorBrush x:Key="AccentSoftBrush" Color="#40FF4DBF"/>
+    <SolidColorBrush x:Key="AccentStrongBrush" Color="#FF6FD9FF"/>
+    <SolidColorBrush x:Key="AccentGlowBrush" Color="#94A93BDD"/>
+    <SolidColorBrush x:Key="HeaderBrandBrush" Color="#FF86E2FF"/>
+
+    <SolidColorBrush x:Key="LiveBrush" Color="#FFFF5BCA"/>
+    <SolidColorBrush x:Key="ReadyBrush" Color="#FF87E0A8"/>
+    <SolidColorBrush x:Key="PausedBrush" Color="#FFFFD16F"/>
+    <SolidColorBrush x:Key="InactiveBrush" Color="#FF5F6B7D"/>
+
+    <SolidColorBrush x:Key="BossBadgeBackgroundBrush" Color="#424A0D36"/>
+    <SolidColorBrush x:Key="BossBadgeBorderBrush" Color="#E2FF58C6"/>
+
+    <SolidColorBrush x:Key="ButtonForegroundBrush" Color="#FFFDF8FF"/>
+    <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="#FF15202C"/>
+    <SolidColorBrush x:Key="ButtonHoverBackgroundBrush" Color="#FF1D2B39"/>
+    <SolidColorBrush x:Key="ButtonPressedBackgroundBrush" Color="#FF0A1118"/>
+    <SolidColorBrush x:Key="ButtonBorderBrush" Color="#FF304354"/>
+    <SolidColorBrush x:Key="ButtonHoverBorderBrush" Color="#E084DFFF"/>
+
+    <SolidColorBrush x:Key="PrimaryButtonBackgroundBrush" Color="#D135112B"/>
+    <SolidColorBrush x:Key="PrimaryButtonHoverBrush" Color="#E349173A"/>
+    <SolidColorBrush x:Key="PrimaryButtonPressedBrush" Color="#F0210A1A"/>
+    <SolidColorBrush x:Key="PrimaryButtonBorderBrush" Color="#FFFF58C6"/>
+    <SolidColorBrush x:Key="SecondaryButtonBackgroundBrush" Color="#FF131D27"/>
+
+    <SolidColorBrush x:Key="ProgressTrackBrush" Color="#FF192530"/>
+    <SolidColorBrush x:Key="ProgressFillBrush" Color="#EEFF4AC2"/>
+    <SolidColorBrush x:Key="ProgressFillPalBrush" Color="#E86FDDFF"/>
+    <SolidColorBrush x:Key="ProgressGroupFillBrush" Color="#F0D63EAF"/>
+
+    <SolidColorBrush x:Key="ExpanderBackgroundBrush" Color="#E60B121A"/>
+    <SolidColorBrush x:Key="ExpanderBorderBrush" Color="#FF23313E"/>
+    <SolidColorBrush x:Key="ExpanderHeaderBrush" Color="#FFE1C9EA"/>
+    <SolidColorBrush x:Key="ExpanderArrowBrush" Color="#FF8EE5FF"/>
+
+    <SolidColorBrush x:Key="StatLabelBrush" Color="#FFD5B4DA"/>
+    <SolidColorBrush x:Key="StatValueBrush" Color="#FFFFF7FF"/>
+
+    <SolidColorBrush x:Key="RowGroupNameBrush" Color="#FFFFF4FF"/>
+    <SolidColorBrush x:Key="RowGroupDpsBrush" Color="#FFFF6DD0"/>
+    <SolidColorBrush x:Key="RowGroupIndicatorBrush" Color="#FF7BE1FF"/>
+    <SolidColorBrush x:Key="RowGroupDividerBrush" Color="#A22F4152"/>
+    <SolidColorBrush x:Key="RowChildNameBrush" Color="#FFE8D6EC"/>
+    <SolidColorBrush x:Key="RowChildDpsPlayerBrush" Color="#FFFF8DDA"/>
+    <SolidColorBrush x:Key="RowChildDpsPalBrush" Color="#FF98E8FF"/>
+    <SolidColorBrush x:Key="RowChildIndicatorBrush" Color="#FF95A1AF"/>
+    <SolidColorBrush x:Key="RowChildDividerBrush" Color="#FF19252F"/>
+
+    <SolidColorBrush x:Key="SourceCombatantNameBrush" Color="#FFFFF2FF"/>
+    <SolidColorBrush x:Key="SourceCombatantDamageBrush" Color="#FFFF76D3"/>
+    <SolidColorBrush x:Key="SourceCombatantDividerBrush" Color="#8A364354"/>
+    <SolidColorBrush x:Key="SourceNameBrush" Color="#FFD7C3DC"/>
+    <SolidColorBrush x:Key="SourceDamageBrush" Color="#FFF6EAF8"/>
+    <SolidColorBrush x:Key="SourceDividerBrush" Color="#FF1A2630"/>
+    <SolidColorBrush x:Key="PlaceholderBrush" Color="#FF8A7B92"/>
+    <SolidColorBrush x:Key="PercentTextBrush" Color="#FF9FB4C8"/>
+
+    <SolidColorBrush x:Key="ToggleForegroundBrush" Color="#FFFDF8FF"/>
+    <SolidColorBrush x:Key="ToggleWindowBackgroundBrush" Color="#F00B121A"/>
+    <SolidColorBrush x:Key="ToggleWindowBorderBrush" Color="#FF2E4050"/>
+    <SolidColorBrush x:Key="ToggleWindowLockedBackgroundBrush" Color="#F0281023"/>
+    <SolidColorBrush x:Key="ToggleWindowLockedBorderBrush" Color="#FFFF56C5"/>
+    <SolidColorBrush x:Key="ToggleWindowPausedBackgroundBrush" Color="#F0122130"/>
+    <SolidColorBrush x:Key="ToggleWindowPausedBorderBrush" Color="#FF71DEFF"/>
+</ResourceDictionary>
