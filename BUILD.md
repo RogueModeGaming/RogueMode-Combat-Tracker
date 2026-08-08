@@ -50,7 +50,9 @@ dotnet publish .\RogueModeDpsMeter\RogueModeDpsMeter.csproj `
   --self-contained true
 ```
 
-The normal publish output is under the project's Release `win-x64` publish directory.
+The default command-line publish output is:
+
+RogueModeDpsMeter\bin\Release\net10.0-windows\win-x64\publish\
 
 ## UE4SS component
 
