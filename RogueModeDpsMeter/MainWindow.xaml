@@ -1,0 +1,764 @@
+<Window x:Class="RogueModeDpsMeter.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="RogueMode's Combat Tracker v0.9.0.3 Beta"
+        Width="390"
+        MinWidth="390"
+        MaxWidth="390"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="True"
+        Closing="Window_Closing">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Load a concrete default skin before the shared styles so
+                     Visual Studio and the XAML designer can resolve every
+                     DynamicResource during InitializeComponent. -->
+                <ResourceDictionary Source="Themes/RM.xaml"/>
+                <ResourceDictionary Source="Themes/BaseStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="HealthStatusButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Padding" Value="3,2"/>
+                <Setter Property="Margin" Value="0,0,3,0"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Focusable" Value="False"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="StatusButtonBorder"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="4"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="StatusButtonBorder"
+                                            Property="Background"
+                                            Value="{DynamicResource AccentSoftBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="StatusButtonBorder"
+                                            Property="Opacity"
+                                            Value="0.72"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Margin="5">
+        <Border Background="{DynamicResource WindowBackgroundBrush}"
+                BorderBrush="{DynamicResource WindowBorderBrush}"
+                BorderThickness="1"
+                CornerRadius="10">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="14"
+                                  ShadowDepth="0"
+                                  Opacity="0.52"
+                                  Color="{DynamicResource WindowGlowColor}"/>
+            </Border.Effect>
+
+            <Grid>
+                <!-- Property elements must remain before all visual children. -->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="49"/>
+                    <RowDefinition Height="1"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- A Border background does not contribute the source
+                     image's natural dimensions to SizeToContent. This keeps
+                     the tracker compact when the Potatoe artwork is active. -->
+                <Border x:Name="ThemeBackgroundLayer"
+                        Grid.RowSpan="3"
+                        Background="Transparent"
+                        CornerRadius="10"
+                        ClipToBounds="True"
+                        IsHitTestVisible="False"
+                        SnapsToDevicePixels="True"/>
+                <Border Grid.RowSpan="3"
+                        Background="{DynamicResource ThemeBackgroundOverlayBrush}"
+                        CornerRadius="10"
+                        ClipToBounds="True"
+                        IsHitTestVisible="False"/>
+
+                <!-- Header -->
+                <Border Grid.Row="0"
+                        Background="{DynamicResource HeaderBackgroundBrush}"
+                        CornerRadius="10,10,0,0"
+                        MouseLeftButtonDown="Header_MouseLeftButtonDown">
+                    <Grid Margin="8,0,6,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- RogueMode brand mark -->
+                        <Border Grid.Column="0"
+                                Width="34"
+                                Height="34"
+                                Margin="0,0,8,0"
+                                Background="{DynamicResource AccentSoftBrush}"
+                                BorderBrush="{DynamicResource AccentBrush}"
+                                BorderThickness="1"
+                                CornerRadius="7"
+                                ClipToBounds="True"
+                                SnapsToDevicePixels="True"
+                                VerticalAlignment="Center">
+                            <Grid>
+                                <Border Margin="2"
+                                        BorderBrush="{DynamicResource AccentSoftBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="5"/>
+
+                                <Image x:Name="HeaderBrandImage"
+                                       Width="30"
+                                       Height="30"
+                                       Margin="1"
+                                       Stretch="Uniform"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       SnapsToDevicePixels="True"
+                                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                            </Grid>
+                        </Border>
+
+                        <StackPanel Grid.Column="1"
+                                    Margin="0,0,0,0"
+                                    VerticalAlignment="Center">
+                            <TextBlock Text="ROGUEMODE"
+                                       Foreground="{DynamicResource PrimaryTextBrush}"
+                                       FontSize="14"
+                                       FontWeight="Black"/>
+                            <TextBlock Text="TRACKER  ·  v0.9.0.3 Beta"
+                                       Foreground="{DynamicResource HeaderBrandBrush}"
+                                       FontSize="7"
+                                       FontWeight="Bold"
+                                       Margin="1,-1,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2"
+                                    Orientation="Horizontal"
+                                    VerticalAlignment="Center">
+                            <Button x:Name="HealthStatusButton"
+                                    Style="{StaticResource HealthStatusButtonStyle}"
+                                    ToolTip="Open combat feed status details"
+                                    Click="HealthStatusButton_Click">
+                                <StackPanel VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal"
+                                                HorizontalAlignment="Right">
+                                        <Ellipse x:Name="LiveIndicator"
+                                                 Width="6"
+                                                 Height="6"
+                                                 Margin="0,0,4,0"
+                                                 Fill="{DynamicResource InactiveBrush}"/>
+                                        <TextBlock x:Name="LiveStatusText"
+                                                   Text="OFFLINE"
+                                                   Foreground="{DynamicResource SecondaryTextBrush}"
+                                                   FontSize="8"
+                                                   FontWeight="Bold"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                    <TextBlock x:Name="HeaderCombatTimeText"
+                                               Text="00:00"
+                                               Foreground="{DynamicResource MutedTextBrush}"
+                                               FontFamily="Consolas"
+                                               FontSize="8"
+                                               HorizontalAlignment="Right"
+                                               Margin="0,1,0,0"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="HistoryButton"
+                                    Content="HIST"
+                                    ToolTip="Open saved encounter history"
+                                    Style="{StaticResource ThemeButtonStyle}"
+                                    Click="HistoryButton_Click"/>
+                            <Button x:Name="ThemeButton"
+                                    Content="RM"
+                                    ToolTip="Switch combat tracker skin"
+                                    Style="{StaticResource ThemeButtonStyle}"
+                                    Click="ThemeButton_Click"/>
+                            <Button Content="—"
+                                    ToolTip="Minimize"
+                                    Style="{StaticResource WindowButtonStyle}"
+                                    Click="MinimizeButton_Click"/>
+                            <Button Content="×"
+                                    ToolTip="Close"
+                                    Style="{StaticResource WindowButtonStyle}"
+                                    Click="CloseButton_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Row="1"
+                        Background="{DynamicResource HeaderDividerBrush}"/>
+
+                <!-- Tracker body -->
+                <Grid Grid.Row="2" Margin="6">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="4"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Target -->
+                    <Border Grid.Row="0"
+                            Background="{DynamicResource PanelBackgroundBrush}"
+                            BorderBrush="{DynamicResource PanelBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="7"
+                            Padding="9,6">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="5"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="0"
+                                       Text="TARGET"
+                                       Foreground="{DynamicResource SecondaryTextBrush}"
+                                       FontSize="8"
+                                       FontWeight="Bold"/>
+
+                            <Border Grid.Row="0"
+                                    Grid.Column="1"
+                                    Background="{DynamicResource BossBadgeBackgroundBrush}"
+                                    BorderBrush="{DynamicResource BossBadgeBorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="4"
+                                    Padding="6,1">
+                                <TextBlock x:Name="TargetBadgeText"
+                                           Text="TARGET"
+                                           Foreground="{DynamicResource AccentBrush}"
+                                           FontSize="7"
+                                           FontWeight="Bold"/>
+                            </Border>
+
+                            <TextBlock Grid.Row="1"
+                                       Grid.ColumnSpan="2"
+                                       x:Name="TargetNameValueText"
+                                       Text="Waiting for Palworld"
+                                       Foreground="{DynamicResource PrimaryTextBrush}"
+                                       FontSize="17"
+                                       FontWeight="Bold"
+                                       Margin="0,1,0,0"
+                                       TextTrimming="CharacterEllipsis"/>
+
+                            <ProgressBar Grid.Row="3"
+                                         Grid.Column="0"
+                                         x:Name="TargetActivityBar"
+                                         Value="0"
+                                         Margin="0,0,10,0"
+                                         Foreground="{DynamicResource AccentBrush}"
+                                         Style="{StaticResource ContributionProgressStyle}"/>
+
+                            <TextBlock Grid.Row="3"
+                                       Grid.Column="1"
+                                       x:Name="TargetTelemetryText"
+                                       Text="LIVE HP NOT AVAILABLE"
+                                       Foreground="{DynamicResource MutedTextBrush}"
+                                       FontSize="6.5"
+                                       FontWeight="SemiBold"
+                                       VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- DPS summary and player rows -->
+                    <Border Grid.Row="2"
+                            Background="{DynamicResource PanelElevatedBackgroundBrush}"
+                            BorderBrush="{DynamicResource PanelStrongBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="9">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="1"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Margin="10,6,10,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="TEAM OUTPUT"
+                                               Foreground="{DynamicResource SecondaryTextBrush}"
+                                               FontSize="8.5"
+                                               FontWeight="Bold"/>
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0,1,0,0">
+                                        <TextBlock x:Name="SummaryDpsValueText"
+                                                   Text="0"
+                                                   Foreground="{DynamicResource AccentBrush}"
+                                                   FontFamily="Segoe UI Black"
+                                                   FontSize="32"
+                                                   FontWeight="Black"
+                                                   VerticalAlignment="Bottom"/>
+                                        <TextBlock Text=" DPS"
+                                                   Foreground="{DynamicResource SecondaryTextBrush}"
+                                                   FontSize="10"
+                                                   FontWeight="Bold"
+                                                   Margin="3,0,0,5"
+                                                   VerticalAlignment="Bottom"/>
+                                    </StackPanel>
+                                    <TextBlock x:Name="SummaryMetaText"
+                                               Text="0 DAMAGE  •  0.0 SEC"
+                                               Foreground="{DynamicResource MutedTextBrush}"
+                                               FontFamily="Consolas"
+                                               FontSize="8.5"
+                                               FontWeight="SemiBold"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Border Grid.Row="1"
+                                    Background="{DynamicResource PanelBorderBrush}"/>
+
+                            <ScrollViewer Grid.Row="2"
+                                          MaxHeight="230"
+                                          VerticalScrollBarVisibility="Auto"
+                                          HorizontalScrollBarVisibility="Disabled">
+                                <ItemsControl x:Name="CombatantRowsControl">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Height="{Binding RowHeight}">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="3"/>
+                                                </Grid.RowDefinitions>
+
+                                                <Border Grid.RowSpan="2"
+                                                        BorderBrush="{Binding DividerBrush}"
+                                                        BorderThickness="0,1,0,0"
+                                                        Background="Transparent"/>
+
+                                                <Grid Grid.Row="0" Margin="11,0,11,0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="22"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <TextBlock Grid.Column="0"
+                                                               Text="{Binding Indicator}"
+                                                               Foreground="{Binding IndicatorBrush}"
+                                                               FontSize="{Binding IndicatorFontSize}"
+                                                               FontWeight="Bold"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"/>
+
+                                                    <TextBlock Grid.Column="1"
+                                                               Text="{Binding DisplayName}"
+                                                               Foreground="{Binding NameBrush}"
+                                                               FontSize="{Binding NameFontSize}"
+                                                               FontWeight="{Binding NameFontWeight}"
+                                                               Margin="{Binding NameMargin}"
+                                                               VerticalAlignment="Center"
+                                                               TextTrimming="CharacterEllipsis"/>
+
+                                                    <StackPanel Grid.Column="2"
+                                                                Orientation="Horizontal"
+                                                                VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding DpsText}"
+                                                                   Foreground="{Binding DpsBrush}"
+                                                                   FontSize="{Binding DpsFontSize}"
+                                                                   FontWeight="Bold"
+                                                                   FontFamily="Segoe UI Semibold"
+                                                                   VerticalAlignment="Center"/>
+                                                        <TextBlock Text=" DPS"
+                                                                   Foreground="{DynamicResource SecondaryTextBrush}"
+                                                                   FontSize="7"
+                                                                   FontWeight="Bold"
+                                                                   Margin="3,0,0,2"
+                                                                   VerticalAlignment="Bottom"/>
+                                                    </StackPanel>
+                                                </Grid>
+
+                                                <ProgressBar Grid.Row="1"
+                                                             Value="{Binding ContributionPercent, Mode=OneWay, FallbackValue=0, TargetNullValue=0}"
+                                                             Foreground="{Binding BarBrush}"
+                                                             Margin="28,0,9,0"
+                                                             Style="{StaticResource ContributionProgressStyle}"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+
+                    <Expander Grid.Row="4"
+                              Header="ENCOUNTER DETAILS"
+                              IsExpanded="False"
+                              Style="{StaticResource TrackerExpanderStyle}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="19"/>
+                                <RowDefinition Height="19"/>
+                                <RowDefinition Height="19"/>
+                                <RowDefinition Height="19"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0"
+                                       Text="Total DPS"
+                                       Style="{StaticResource StatLabelStyle}"/>
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="1"
+                                       x:Name="TotalDpsValueText"
+                                       Text="0"
+                                       Style="{StaticResource StatValueStyle}"/>
+
+                            <TextBlock Grid.Row="1"
+                                       Text="Total Damage"
+                                       Style="{StaticResource StatLabelStyle}"/>
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="1"
+                                       x:Name="TotalDamageValueText"
+                                       Text="0"
+                                       Style="{StaticResource StatValueStyle}"/>
+
+                            <TextBlock Grid.Row="2"
+                                       Text="Combat Time"
+                                       Style="{StaticResource StatLabelStyle}"/>
+                            <TextBlock Grid.Row="2"
+                                       Grid.Column="1"
+                                       x:Name="CombatTimeValueText"
+                                       Text="0.00 s"
+                                       Style="{StaticResource StatValueStyle}"/>
+
+                            <TextBlock Grid.Row="3"
+                                       Text="Current Target HP"
+                                       Style="{StaticResource StatLabelStyle}"/>
+                            <TextBlock Grid.Row="3"
+                                       Grid.Column="1"
+                                       x:Name="CurrentHpValueText"
+                                       Text="—"
+                                       Style="{StaticResource StatValueStyle}"/>
+                        </Grid>
+                    </Expander>
+
+                    <Expander Grid.Row="6"
+                              Header="EXACT DAMAGE SOURCES"
+                              IsExpanded="False"
+                              Style="{StaticResource TrackerExpanderStyle}">
+                        <ScrollViewer MaxHeight="210"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+                            <ItemsControl x:Name="DamageSourceRowsControl">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Height="{Binding RowHeight}"
+                                                BorderBrush="{Binding DividerBrush}"
+                                                BorderThickness="0,1,0,0">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="40"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBlock Grid.Column="0"
+                                                           Text="{Binding DisplayName}"
+                                                           Foreground="{Binding NameBrush}"
+                                                           FontSize="{Binding NameFontSize}"
+                                                           FontWeight="{Binding NameFontWeight}"
+                                                           Margin="{Binding NameMargin}"
+                                                           VerticalAlignment="Center"
+                                                           TextTrimming="CharacterEllipsis"/>
+
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding DamageText}"
+                                                           Foreground="{Binding DamageBrush}"
+                                                           FontSize="{Binding DamageFontSize}"
+                                                           FontWeight="Bold"
+                                                           FontFamily="Consolas"
+                                                           Margin="5,0,0,0"
+                                                           VerticalAlignment="Center"/>
+
+                                                <TextBlock Grid.Column="2"
+                                                           Text="{Binding PercentText}"
+                                                           Foreground="{DynamicResource PercentTextBrush}"
+                                                           FontSize="8.5"
+                                                           FontWeight="SemiBold"
+                                                           FontFamily="Consolas"
+                                                           HorizontalAlignment="Right"
+                                                           VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Expander>
+
+                    <Expander Grid.Row="8"
+                              Header="PAL SKILL ATTRIBUTION"
+                              IsExpanded="False"
+                              Style="{StaticResource TrackerExpanderStyle}">
+                        <ScrollViewer MaxHeight="210"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+                            <ItemsControl x:Name="PalSkillRowsControl">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Height="{Binding RowHeight}"
+                                                BorderBrush="{Binding DividerBrush}"
+                                                BorderThickness="0,1,0,0">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="70"/>
+                                                    <ColumnDefinition Width="64"/>
+                                                    <ColumnDefinition Width="70"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBlock Grid.Column="0"
+                                                           Text="{Binding DisplayName}"
+                                                           Foreground="{Binding NameBrush}"
+                                                           FontSize="{Binding NameFontSize}"
+                                                           FontWeight="{Binding NameFontWeight}"
+                                                           Margin="{Binding NameMargin}"
+                                                           VerticalAlignment="Center"
+                                                           TextTrimming="CharacterEllipsis"/>
+
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding DamageText}"
+                                                           Foreground="{Binding DamageBrush}"
+                                                           FontFamily="Consolas"
+                                                           FontSize="9"
+                                                           FontWeight="Bold"
+                                                           HorizontalAlignment="Right"
+                                                           VerticalAlignment="Center"/>
+
+                                                <TextBlock Grid.Column="2"
+                                                           Text="{Binding HitCastText}"
+                                                           Foreground="{DynamicResource PercentTextBrush}"
+                                                           FontFamily="Consolas"
+                                                           FontSize="7.5"
+                                                           HorizontalAlignment="Right"
+                                                           VerticalAlignment="Center"/>
+
+                                                <TextBlock Grid.Column="3"
+                                                           Text="{Binding AverageText}"
+                                                           Foreground="{DynamicResource MutedTextBrush}"
+                                                           FontFamily="Consolas"
+                                                           FontSize="7.5"
+                                                           HorizontalAlignment="Right"
+                                                           VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Expander>
+
+                    <Grid Grid.Row="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.2*"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0"
+                                x:Name="StopButton"
+                                Content="● STOP"
+                                Height="29"
+                                IsEnabled="False"
+                                Style="{StaticResource PrimaryParserButtonStyle}"
+                                Click="StopButton_Click"/>
+
+                        <Button Grid.Column="2"
+                                x:Name="ResetButton"
+                                Content="↻ RESET"
+                                Height="29"
+                                Style="{StaticResource SecondaryParserButtonStyle}"
+                                Click="ResetButton_Click"/>
+                    </Grid>
+
+                    <Border x:Name="TelemetryHealthPanel"
+                            Grid.Row="12"
+                            Visibility="Collapsed"
+                            Background="{DynamicResource PanelElevatedBackgroundBrush}"
+                            BorderBrush="{DynamicResource PanelStrongBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="7"
+                            Padding="9,8">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,7">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="COMBAT FEED STATUS"
+                                               Foreground="{DynamicResource SecondaryTextBrush}"
+                                               FontSize="8"
+                                               FontWeight="Bold"/>
+                                    <TextBlock x:Name="TelemetryHealthHeadlineText"
+                                               Text="Waiting for Palworld"
+                                               Foreground="{DynamicResource PrimaryTextBrush}"
+                                               FontSize="11"
+                                               FontWeight="Bold"
+                                               Margin="0,1,0,0"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1"
+                                           x:Name="HealthActionFeedbackText"
+                                           Foreground="{DynamicResource HeaderBrandBrush}"
+                                           FontSize="7.5"
+                                           FontWeight="Bold"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="78"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="18"/>
+                                    <RowDefinition Height="18"/>
+                                    <RowDefinition Height="18"/>
+                                    <RowDefinition Height="18"/>
+                                    <RowDefinition Height="18"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Text="Tracker" Style="{StaticResource StatLabelStyle}"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" x:Name="HealthTrackerVersionText" Text="v0.9.0.3 Beta" Style="{StaticResource StatValueStyle}"/>
+
+                                <TextBlock Grid.Row="1" Text="Lua" Style="{StaticResource StatLabelStyle}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" x:Name="HealthLuaVersionText" Text="Not reported" Style="{StaticResource StatValueStyle}"/>
+
+                                <TextBlock Grid.Row="2" Text="Format" Style="{StaticResource StatLabelStyle}"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" x:Name="HealthFormatText" Text="Unknown" Style="{StaticResource StatValueStyle}"/>
+
+                                <TextBlock Grid.Row="3" Text="Diagnostics" Style="{StaticResource StatLabelStyle}"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" x:Name="HealthDiagnosticsText" Text="Unknown" Style="{StaticResource StatValueStyle}"/>
+
+                                <TextBlock Grid.Row="4" Text="Last update" Style="{StaticResource StatLabelStyle}"/>
+                                <TextBlock Grid.Row="4" Grid.Column="1" x:Name="HealthLastUpdateText" Text="Never" Style="{StaticResource StatValueStyle}"/>
+                            </Grid>
+
+                            <TextBlock Text="ACTIVE TELEMETRY PATH"
+                                       Foreground="{DynamicResource SecondaryTextBrush}"
+                                       FontSize="7"
+                                       FontWeight="Bold"
+                                       Margin="0,7,0,2"/>
+                            <TextBlock x:Name="HealthTelemetryPathText"
+                                       Text="Not resolved"
+                                       Foreground="{DynamicResource MutedTextBrush}"
+                                       FontFamily="Consolas"
+                                       FontSize="7.5"
+                                       TextWrapping="Wrap"/>
+
+                            <TextBlock Text="PUBLIC removes names, local paths, actor instances, and memory addresses. PRIVATE retains raw troubleshooting details."
+                                       Foreground="{DynamicResource MutedTextBrush}"
+                                       FontSize="7"
+                                       TextWrapping="Wrap"
+                                       Margin="0,8,0,4"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="5"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0"
+                                        x:Name="CreatePublicDiagnosticZipButton"
+                                        Content="CREATE PUBLIC ZIP"
+                                        Height="29"
+                                        Style="{StaticResource PrimaryParserButtonStyle}"
+                                        Click="CreatePublicDiagnosticZipButton_Click"
+                                        ToolTip="Create an aggressively sanitized bundle suitable for public support uploads."/>
+                                <Button Grid.Column="2"
+                                        x:Name="CreatePrivateDiagnosticZipButton"
+                                        Content="PRIVATE DEV ZIP"
+                                        Height="29"
+                                        Style="{StaticResource SecondaryParserButtonStyle}"
+                                        Click="CreatePrivateDiagnosticZipButton_Click"
+                                        ToolTip="Create a complete bundle with raw paths and identifiers for a trusted developer."/>
+                            </Grid>
+
+                            <Grid Margin="0,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="5"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0"
+                                        x:Name="OpenDiagnosticsFolderButton"
+                                        Content="OPEN DIAGNOSTICS"
+                                        Height="27"
+                                        Style="{StaticResource SecondaryParserButtonStyle}"
+                                        Click="OpenDiagnosticsFolderButton_Click"/>
+                                <Button Grid.Column="2"
+                                        x:Name="CopyTelemetryDetailsButton"
+                                        Content="COPY SAFE SUMMARY"
+                                        Height="27"
+                                        Style="{StaticResource SecondaryParserButtonStyle}"
+                                        Click="CopyTelemetryDetailsButton_Click"/>
+                            </Grid>
+
+                            <Button x:Name="OpenTelemetryFolderButton"
+                                    Content="OPEN TELEMETRY FOLDER"
+                                    Height="27"
+                                    Margin="0,5,0,0"
+                                    Style="{StaticResource SecondaryParserButtonStyle}"
+                                    Click="OpenTelemetryFolderButton_Click"/>
+
+                            <TextBlock Text="LAST DIAGNOSTIC ZIP"
+                                       Foreground="{DynamicResource SecondaryTextBrush}"
+                                       FontSize="7"
+                                       FontWeight="Bold"
+                                       Margin="0,8,0,2"/>
+                            <TextBlock x:Name="DiagnosticBundlePathText"
+                                       Text="Not created this session"
+                                       Foreground="{DynamicResource MutedTextBrush}"
+                                       FontFamily="Consolas"
+                                       FontSize="7.5"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

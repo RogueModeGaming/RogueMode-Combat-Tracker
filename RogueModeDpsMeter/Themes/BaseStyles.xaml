@@ -1,0 +1,243 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="ParserButtonStyle" TargetType="Button">
+        <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource ButtonBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="FontSize" Value="9"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="ButtonBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="6">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ButtonBorder"
+                                    Property="Background"
+                                    Value="{DynamicResource ButtonHoverBackgroundBrush}"/>
+                            <Setter TargetName="ButtonBorder"
+                                    Property="BorderBrush"
+                                    Value="{DynamicResource ButtonHoverBorderBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ButtonBorder"
+                                    Property="Background"
+                                    Value="{DynamicResource ButtonPressedBackgroundBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.42"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PrimaryParserButtonStyle"
+           TargetType="Button"
+           BasedOn="{StaticResource ParserButtonStyle}">
+        <Setter Property="Background" Value="{DynamicResource PrimaryButtonBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryButtonBorderBrush}"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="ButtonBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="6">
+                        <Grid>
+                            <Border Height="1"
+                                    Margin="8,0"
+                                    VerticalAlignment="Top"
+                                    Background="{DynamicResource AccentSoftBrush}"/>
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ButtonBorder"
+                                    Property="Background"
+                                    Value="{DynamicResource PrimaryButtonHoverBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ButtonBorder"
+                                    Property="Background"
+                                    Value="{DynamicResource PrimaryButtonPressedBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.42"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SecondaryParserButtonStyle"
+           TargetType="Button"
+           BasedOn="{StaticResource ParserButtonStyle}">
+        <Setter Property="Background" Value="{DynamicResource SecondaryButtonBackgroundBrush}"/>
+    </Style>
+
+    <Style x:Key="WindowButtonStyle"
+           TargetType="Button"
+           BasedOn="{StaticResource ParserButtonStyle}">
+        <Setter Property="Width" Value="25"/>
+        <Setter Property="Height" Value="23"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Margin" Value="3,0,0,0"/>
+        <Setter Property="FontSize" Value="11"/>
+    </Style>
+
+    <Style x:Key="ThemeButtonStyle"
+           TargetType="Button"
+           BasedOn="{StaticResource ParserButtonStyle}">
+        <Setter Property="Height" Value="22"/>
+        <Setter Property="Padding" Value="6,0"/>
+        <Setter Property="Margin" Value="4,0,0,0"/>
+        <Setter Property="FontSize" Value="7.5"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+
+    <Style x:Key="StatLabelStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource StatLabelBrush}"/>
+        <Setter Property="FontSize" Value="9.5"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Key="StatValueStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource StatValueBrush}"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontFamily" Value="Consolas"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Hotfix: use WPF's native ProgressBar template.
+         The previous custom PART_Track/PART_Indicator template could fail
+         when the first combat value changed from zero to a live value. -->
+    <Style x:Key="ContributionProgressStyle" TargetType="ProgressBar">
+        <Setter Property="Height" Value="3"/>
+        <Setter Property="Minimum" Value="0"/>
+        <Setter Property="Maximum" Value="100"/>
+        <Setter Property="Background" Value="{DynamicResource ProgressTrackBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ProgressFillBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource PanelBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="IsIndeterminate" Value="False"/>
+    </Style>
+
+
+    <!-- A template-free header hit target prevents the Windows default
+         ToggleButton checked/focus colors from bleeding into expanded panels. -->
+    <Style x:Key="ExpanderHeaderToggleStyle" TargetType="ToggleButton">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="TrackerExpanderStyle" TargetType="Expander">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Expander">
+                    <Border Background="{DynamicResource ExpanderBackgroundBrush}"
+                            BorderBrush="{DynamicResource ExpanderBorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="7">
+                        <StackPanel>
+                            <Grid Height="25" Background="Transparent">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0"
+                                        Width="3"
+                                        Height="11"
+                                        Margin="8,0,6,0"
+                                        Background="{DynamicResource AccentBrush}"
+                                        CornerRadius="2"
+                                        VerticalAlignment="Center"/>
+
+                                <TextBlock Grid.Column="1"
+                                           Text="{TemplateBinding Header}"
+                                           Foreground="{DynamicResource ExpanderHeaderBrush}"
+                                           FontSize="8"
+                                           FontWeight="Bold"
+                                           VerticalAlignment="Center"/>
+
+                                <Path x:Name="ExpanderArrow"
+                                      Grid.Column="2"
+                                      Data="M 0 0 L 4 4 L 8 0"
+                                      Stroke="{DynamicResource ExpanderArrowBrush}"
+                                      StrokeThickness="1.5"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      Margin="0,0,8,0"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+
+                                <ToggleButton Grid.ColumnSpan="3"
+                                              Style="{StaticResource ExpanderHeaderToggleStyle}"
+                                              IsChecked="{Binding IsExpanded,
+                                                                  RelativeSource={RelativeSource TemplatedParent},
+                                                                  Mode=TwoWay}"/>
+                            </Grid>
+
+                            <Border x:Name="ExpanderContent"
+                                    Margin="8,0,8,6"
+                                    Background="Transparent"
+                                    Visibility="Collapsed">
+                                <ContentPresenter ContentSource="Content"
+                                                  SnapsToDevicePixels="True"/>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="ExpanderContent"
+                                    Property="Visibility"
+                                    Value="Visible"/>
+                            <Setter TargetName="ExpanderArrow"
+                                    Property="Data"
+                                    Value="M 0 4 L 4 0 L 8 4"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.55"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
