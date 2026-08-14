@@ -1,4 +1,0 @@
-<!-- Add this inside RogueModeDpsMeter.csproj if the image is not already marked as a WPF Resource. -->
-<ItemGroup>
-  <Resource Include="Assets\RogueModeMark.png" />
-</ItemGroup>
