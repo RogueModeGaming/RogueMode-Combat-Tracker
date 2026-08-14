@@ -44,7 +44,9 @@ RMCT is intended as an analysis tool. The tracker source reads and processes com
 
 ## UE4SS
 
-UE4SS is required for the Palworld-side Lua component but is not included in this source repository. UE4SS is a separate third-party project with its own code, distribution, and security considerations.
+UE4SS is required for the Palworld-side Lua component. This repository includes RMCT's `RogueModeTelemetry` Lua source, but does not include the UE4SS framework or binaries themselves.
+
+UE4SS is a separate third-party project with its own code, distribution, and security considerations.
 
 ## Reporting a security issue
 
